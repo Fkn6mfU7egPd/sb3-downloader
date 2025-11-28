@@ -2,7 +2,7 @@
   font-family: monospace;
 }
 
-#progress {
+code {
   font-family: monospace;
   white-space: pre;
 }

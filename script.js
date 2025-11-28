@@ -3,6 +3,7 @@ import { downloadProject } from "./downloader.js";
 const button = document.getElementById("download_button");
 const projectid_input = document.getElementById("projectid");
 const token_input = document.getElementById("token");
+const total_download_size = document.getElementById("total-download");
 const progress = document.getElementById("progress");
 const download = document.getElementById("download_link");
 
@@ -29,7 +30,9 @@ button.addEventListener("click", async () => {
   try {
     const file = await downloadProject(projectId, (message) => {
       progress.textContent = message;
-    }, formatFileSize, token_input.value);
+    }, formatFileSize, token_input.value, size => {
+      total_download_size.textContent = "Total download size: " + size;
+    });
     const url = URL.createObjectURL(file.content);
     download.href = url;
     download.download = file.filename;
