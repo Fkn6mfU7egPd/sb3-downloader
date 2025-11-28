@@ -1,3 +1,7 @@
+#control-panel {
+  margin: 8px 0;
+}
+
 #projectid, #token {
   font-family: monospace;
 }
@@ -5,4 +9,11 @@
 code {
   font-family: monospace;
   white-space: pre;
+}
+
+#total-download {
+  background: #e0e0e0;
+  
+  padding: 4px;
+  border-radius: 4px;
 }
