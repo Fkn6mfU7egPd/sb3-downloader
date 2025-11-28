@@ -138,7 +138,7 @@ export async function downloadProject(project_id, loggerFunction, fileSizeFormat
     outputted = currentString;
     loggerFunction(outputted);
   });
-  loggerFunction(`Download completed: ${title}.sb3\nFile size: ${fileSizeFormatter(content.size)}\nFile Size / Download Size = ${(content.size / total_download_size * 100).toFixed(1)}%`);
+  loggerFunction(`Download completed: ${title}.sb3\nFile size: ${fileSizeFormatter(content.size)}\nCompression ratio = ${(content.size / total_download_size * 100).toFixed(1)}%`);
   return { filename: `${title}.sb3`, content };
 }
 

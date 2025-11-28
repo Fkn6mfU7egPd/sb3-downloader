@@ -1,3 +1,8 @@
+body {
+  display: flex;
+  flex-direction: column;
+}
+
 #projectid, #token {
   font-family: monospace;
 }
@@ -5,4 +10,12 @@
 code {
   font-family: monospace;
   white-space: pre;
+}
+
+#total-download {
+  width: fit-content;
+  background: #e0e0e0;
+  margin: 8px 4px;
+  padding: 4px;
+  border-radius: 4px;
 }
