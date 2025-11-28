@@ -1,0 +1,8 @@
+#projectid, #token {
+  font-family: monospace;
+}
+
+#progress {
+  font-family: monospace;
+  white-space: pre;
+}
