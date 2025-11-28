@@ -106,7 +106,7 @@ export async function downloadProject(project_id, loggerFunction, fileSizeFormat
 
   loggerFunction("Compressing zip...");
   let outputted = null;
-  const content = await zip.generateAsync({type: "blob", compressionOptions: {level: 9}}, metadata => {
+  const content = await zip.generateAsync({type: "blob", compression: "DEFLATE", compressionOptions: {level: 9}}, metadata => {
     const currentString = `${makeProgressBar(Math.floor(metadata.percent), 100)} Compressing Files... ${Math.floor(metadata.percent)}%${metadata.currentFile?` ${metadata.currentFile}`:""}`;
     if(outputted === currentString) return;
     outputted = currentString;
