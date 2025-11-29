@@ -56,7 +56,7 @@ export async function downloadProject(project_id, loggerFunction, fileSizeFormat
     }
   });
   const status = project_json_res.status;
-  if (!(status >= 200 && status < 300)) throw new Error(`Failed to fetch project API: HTTP ${status}`);
+  if (!(status >= 200 && status < 300)) throw new Error(`Failed to fetch project.json: HTTP ${status}`);
   const project_json_blob = project_json_res.response;
   total_download_size += project_json_blob.size - before_downloaded;
 
