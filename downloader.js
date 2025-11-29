@@ -28,7 +28,7 @@ export async function downloadProject(project_id, loggerFunction, fileSizeFormat
     return finished === 0 ? `[${" ".repeat(length)}]` : finished === 1 ? `[${"=".repeat(length)}]` : `[${"=".repeat(filled)}>${" ".repeat(length - filled - 1)}]`;
   };
 
-  onProgress(fileSizeFormatter(0))
+  onProgress(fileSizeFormatter(0));
 
   let total_download_size = 0;
   let title;
@@ -59,7 +59,7 @@ export async function downloadProject(project_id, loggerFunction, fileSizeFormat
   total_download_size += project_json_blob.size - before_downloaded;
 
   const project_json_text = await readAsText(project_json_blob);
-  const project_json = JSON.parse(project_json_text);
+  const project_json = JSON.parse(project_json_text[0] == "{" ? project_json_text : await (await JSZip.loadAsync(project_json_blob.response, {"base64": false})).file("project.json").async("string"));
 
   loggerFunction("Starting asset downloads...");
 
