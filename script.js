@@ -1,6 +1,6 @@
 import { downloadProject } from "./downloader.js";
 
-const button = document.getElementById("download_button");
+const download_button = document.getElementById("download_button");
 const projectid_input = document.getElementById("projectid");
 const token_input = document.getElementById("token");
 const total_download_size = document.getElementById("total-download");
@@ -14,7 +14,7 @@ const formatFileSize = (bytes) => {
   return `${(bytes / 1024 ** 2).toFixed(2)} MB`;
 };
 
-button.addEventListener("click", async () => {
+download_button.addEventListener("click", async () => {
   const matches = projectid_input.value.match(/\d+/);
   const projectId = matches ? matches[0] : null;
   if (!projectId) {
@@ -24,8 +24,9 @@ button.addEventListener("click", async () => {
 
   progress.textContent = `Starting download: ${projectId}`;
   projectid_input.disabled = true;
-  button.disabled = true;
-  button.textContent = "ダウンロード中...";
+  download_button.disabled = true;
+  token_input.disabled = true;
+  download_button.textContent = "ダウンロード中...";
   download.textContent = "";
   try {
     const file = await downloadProject(projectId, (message) => {
@@ -41,6 +42,7 @@ button.addEventListener("click", async () => {
     progress.textContent = `An error occurred: ${e.message}`;
   }
   projectid_input.disabled = false;
-  button.disabled = false;
-  button.textContent = "ダウンロード";
+  download_button.disabled = false;
+  token_input.disabled = false;
+  download_button.textContent = "ダウンロード";
 });
