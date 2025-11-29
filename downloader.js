@@ -6,7 +6,7 @@ function downloadWithProgress(url, onProgress){
     xhr.onprogress = (progress) => {
       onProgress(progress);
     };
-    xhr.onload = () => resolve(xhr.response);
+    xhr.onload = () => resolve({response: xhr.response, status: xhr.status});
     xhr.onerror = () => reject(new Error("Failed to download"));
     xhr.send();
   });
@@ -28,7 +28,7 @@ export async function downloadProject(project_id, loggerFunction, fileSizeFormat
     return finished === 0 ? `[${" ".repeat(length)}]` : finished === 1 ? `[${"=".repeat(length)}]` : `[${"=".repeat(filled)}>${" ".repeat(length - filled - 1)}]`;
   };
 
-  onProgress(fileSizeFormatter(0))
+  onProgress(fileSizeFormatter(0));
 
   let total_download_size = 0;
   let title;
@@ -45,7 +45,7 @@ export async function downloadProject(project_id, loggerFunction, fileSizeFormat
   }
 
   let before_downloaded = 0;
-  const project_json_blob = await downloadWithProgress(`https://projects.scratch.mit.edu/${project_id}?token=${token}`, (progress) => {
+  const project_json_res = await downloadWithProgress(`https://projects.scratch.mit.edu/${project_id}?token=${token}`, (progress) => {
     total_download_size += progress.loaded - before_downloaded;
     before_downloaded = progress.loaded;
     onProgress(fileSizeFormatter(total_download_size));
@@ -55,12 +55,13 @@ export async function downloadProject(project_id, loggerFunction, fileSizeFormat
       loggerFunction(`Downloading project.json... (${fileSizeFormatter(progress.loaded)} downloaded)`);
     }
   });
-
+  const status = project_json_res.status;
+  if (!(status >= 200 && status < 300)) throw new Error(`Failed to fetch project API: HTTP ${status}`);
+  const project_json_blob = project_json_res.response;
   total_download_size += project_json_blob.size - before_downloaded;
 
   const project_json_text = await readAsText(project_json_blob);
-  const project_json = JSON.parse(project_json_text);
-
+  const project_json = JSON.parse(project_json_text[0] == "{" ? project_json_text : await (await JSZip.loadAsync(project_json_blob, {"base64": false})).file("project.json").async("string"));
   loggerFunction("Starting asset downloads...");
 
   const fetchWithRetry = async (url, maxRetries = 20, onProgress) => {
@@ -103,12 +104,12 @@ export async function downloadProject(project_id, loggerFunction, fileSizeFormat
   const assetIds = [];
   for (const sprite of project_json.targets) {
     for (const c of sprite.costumes){
-      if (assetIds.includes(c.md5ext)) continue;
-      assetIds.push(c.md5ext);
+      if (assetIds.includes(c.assetId + "." + c.dataFormat)) continue;
+      assetIds.push(c.assetId + "." + c.dataFormat);
     }
     for (const s of sprite.sounds){
-      if (assetIds.includes(s.md5ext)) continue;
-      assetIds.push(s.md5ext);
+      if (assetIds.includes(s.assetId + "." + s.dataFormat)) continue;
+      assetIds.push(s.assetId + "." + s.dataFormat);
     }
   }
 

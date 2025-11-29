@@ -15,7 +15,7 @@ const formatFileSize = (bytes) => {
 };
 
 button.addEventListener("click", async () => {
-  const matches = projectid_input.value.match(/\d+/g);
+  const matches = projectid_input.value.match(/\d+/);
   const projectId = matches ? matches[0] : null;
   if (!projectId) {
     progress.textContent = "Please enter a valid project ID or URL.";
